@@ -2,6 +2,7 @@
 import { checkSchema } from 'express-validator';
 
 export const UserValidator = {
+
     signUp: checkSchema({
         name: {
             isAlpha: true,

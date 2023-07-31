@@ -51,6 +51,9 @@ export const UserController = {
     signIn: async ( req: Request, res: Response ) => {
         const error = validationResult(req);
         const result = matchedData(req);
+        
+        console.log( matchedData(req) );
+        
         if ( error.isEmpty() ) {
 
             const { email, password } = result;

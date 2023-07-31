@@ -20,8 +20,9 @@ const storage = multer.memoryStorage();
 multer({ storage });
 
 server.use(router);
-server.use(cors());
+server.use(cors({ origin: "*://localhost:*/*" }));
 server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
 server.use(express.static(path.join(__dirname, "../public")));
 
 server.listen( SERVER_PORT, ( ) => {

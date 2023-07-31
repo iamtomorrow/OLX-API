@@ -1,4 +1,5 @@
 
+import cors from 'cors';
 import express from 'express';
 import multer from "multer";
 import { Request, Response, urlencoded } from "express";
@@ -19,7 +20,11 @@ router.get("/ping", ( req: Request, res: Response ) => {
 router.get("/states", StateController.getStates);
 
 router.post("/users/signup", UserValidator.signUp, UserController.signUp);
-router.post("/users/signin", UserValidator.signIn, UserController.signIn);
+router.post("/users/signin", 
+    express.json(),
+    express.urlencoded({ extended: true }), 
+    UserValidator.signIn, 
+    UserController.signIn);
 router.get("/users/me", Auth.private, UserController.getMe);
 
 router.get("/categories", AdController.getCategories);
@@ -27,7 +32,7 @@ router.get("/categories", AdController.getCategories);
 router.get("/ads/:id", AdController.getAd);
 router.get("/ads", urlencoded({ extended: true }), AdController.getAllAds);
 router.post("/ads/create", 
-     express.urlencoded({ extended: true }), 
+    express.urlencoded({ extended: true }), 
     Auth.private, 
     upload.array("images"),
     AdController.createAd
