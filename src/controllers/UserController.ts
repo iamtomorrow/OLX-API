@@ -20,7 +20,6 @@ export const UserController = {
                     
                 const state_id = checkState._id;
                 let checkEmail = await User.findOne({ email });
-                console.log(checkEmail);
                 if ( checkEmail === null ) {
 
                     const passwordHash = await hash(password, 10);
@@ -29,6 +28,7 @@ export const UserController = {
                         name,
                         email,
                         state: state_id,
+                        date_created: Date(),
                         hash_password: passwordHash,
                         token
                     })
@@ -121,5 +121,26 @@ export const UserController = {
             }
         }
         res.json({ status: true });
+    },
+
+    getUser: async ( req: Request, res: Response ) => {
+        const { id } = req.query;
+
+        if (id) {
+            let user = await User.findById(id);
+            if (user) {
+                let state = await State.findOne({ _id: user.state });
+                if (state) {
+                    res.json({ name: user.name, email: user.email, state: state.name });
+                    return;
+                }
+            } else {
+                res.json({ error: "Sorrry, advertiser not found." });
+                return;
+            }
+        } else {
+            res.json({ });
+            return;
+        }
     }
 }

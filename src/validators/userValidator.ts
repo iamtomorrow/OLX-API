@@ -5,7 +5,6 @@ export const UserValidator = {
 
     signUp: checkSchema({
         name: {
-            isAlpha: true,
             isLength: {
                 options: { min: 2 }
             },

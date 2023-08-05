@@ -6,7 +6,15 @@ import { Category } from "../models/Category";
 import { State } from "../models/State";
 import { Request, Response } from "express";
 import { User } from "../models/User";
-import mongoose from "mongoose";
+
+interface FilterProps {
+    category: string,
+    state: string,
+    q: string,
+    sort: string,
+    limit: number,
+    offset: number
+}
 
 const handleMedia = async ( path: string ) => {
     const fileName = `${Date.now()}.jpg`;
@@ -19,57 +27,119 @@ const handleMedia = async ( path: string ) => {
 
 export const AdController = {
     getAllAds: async ( req: Request, res: Response ) => {
-        const ads = await Ad.find();
+        let { sort='asc', limit=20, offset=0, category, state, keywords } = req.query;
+        let filters: any = {}
 
-        let adsList = [];
-        for ( let i in ads ) {
-            if (ads[i].status) {
-                let category = await Category.findById(ads[i].category);
-                let state = await State.findById(ads[i].state);
-    
-                adsList.push({
-                    name: ads[i].name,
-                    state: state?.name,
-                    category: category?.name,
-                    price: ads[i].price,
-                    price_negotiable: ads[i].price_negotiable,
-                    description: ads[i].description,
-                    views:  ads[i].views,
-                })
+        if (category) {
+            let categoryMatch = await Category.findOne({ slug: category });
+            if (categoryMatch) {
+                filters.category = categoryMatch?._id as string;
             }
         }
 
+        if (state) {
+            let stateMatch = await State.findOne({ name: state });
+            if (stateMatch) {
+                filters.state = stateMatch._id;
+            }
+        }
+
+        if (keywords) {
+            filters.name = {"$regex": keywords, "$options": "i"};
+        }
+
+        let adsList = [];
+
+        let ads = await Ad.find(filters)
+            .sort({ dateCreated: (sort === "asc" ? 1 : -1)})
+            .skip(parseInt(offset as string))
+            .limit(parseInt(limit as string))
+            .exec();
+
+        // console.log(ads);
+
+        if (ads) {
+            for ( let i in ads ) {
+                if (ads[i].status) {
+                    let category = await Category.findById(ads[i].category);
+                    let state = await State.findById(ads[i].state);
+    
+                    adsList.push({
+                        _id: ads[i]._id,
+                        name: ads[i].name,
+                        state: state?.name,
+                        category: category?.name,
+                        price: ads[i].price,
+                        price_negotiable: ads[i].price_negotiable,
+                        description: ads[i].description,
+                        views:  ads[i].views,
+                        images: ads[i].images
+                    })
+                }
+            }
+        } else {
+            res.json({ error: "Ads not found. Please, provide a different combinations of filters and keywords and try again." });
+            return;
+        }
         res.json({ ads: adsList });
     },
 
     getAd: async ( req: Request, res: Response ) => {
         const { id } = req.query;
 
-        if ( mongoose.Types.ObjectId.isValid( id as string ) ) {
-            let ad = await Ad.findOne({ _id: id });
+        if ( id?.length === 24 ) {
+            let ad = await Ad.findById( id );
             let adList = [ ];
-            if (ad) {                
+            if (ad) {
+                console.log(ad);
+
+                if (ad?.views !== undefined) {
+                    ad.views++;
+                    await ad.save();
+                }
+
+                const ourId = ad.category;
+
+                console.log( await Category.findById( ourId ));
 
                 let matchState = await State.findOne({ _id: ad.state });
-                let matchCategory = await Category.findOne({ _id: ad.category });
+                let matchCategory = await Category.findById( ad.category );
+
                 if ( matchState && matchCategory ) {
+                    console.log("...");
                     const adState = matchState.name;
                     const adCategory = matchCategory.name;
                     const images = ad.images;
+                    const user = await User.findById( ad.id_user );
+                    if (user) {;
 
-                    adList.push({
-                        name: ad.name,
-                        user: ad.id_user,
-                        state: adState,
-                        category: adCategory,
-                        price: ad.price,
-                        price_nogotiable: ad.price_negotiable,
-                        description: ad.description,
-                        views: ad.views,
-                        date_created: ad.date_created,
-                        images
-                    })
-                    res.json({ ad: adList });
+                        let advertiser = [ ];
+                        advertiser.push({
+                            name: user.name,
+                            email: user.email,
+                            state: adState,
+                            date_created: user?.date_created
+                        })
+                        
+                        adList.push({
+                            _id: ad._id,
+                            name: ad.name,
+                            user: ad.id_user,
+                            state: adState,
+                            category: adCategory,
+                            price: ad.price,
+                            price_nogotiable: ad.price_negotiable,
+                            description: ad.description,
+                            views: ad.views,
+                            date_created: ad.date_created,
+                            images,
+                            advertiser
+                        })
+                        res.json({ ad: adList });
+                        return;
+                    }
+                } else {
+                    res.json({ error: "Sorry, the data relative to categories and/or state are not matching. Please, provide a different state and/or category and try again." });
                     return;
                 }
             } else {
@@ -80,8 +150,6 @@ export const AdController = {
             res.json({ error: "Please, make sure to provide a valid id before continuing." });
             return;
         }
-
-        res.json({ });
     },
 
     createAd: async ( req: Request, res: Response ) => {
@@ -95,18 +163,23 @@ export const AdController = {
         let description= req.body?.description;
 
         if ( name && category && state ) {
+
             const matchState = await State.findOne({ name: state });
             const matchCategory = await Category.findOne({ slug: category });
             const user = await User.findOne({ token });
 
             if ( matchState && matchCategory && user ) {
-                // let newAdd = [];
+                const supportedMimeTypes = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
 
                 let adImages = [];
                 if ( req.files ) {
                     const files: any = req.files;
                     if ( files ) {
                         for ( let i in files ) {
+                            if (!supportedMimeTypes.includes(files[i].mimetype)) { 
+                                res.json({ error: "Some files contains unsupported image format. Please, provide supported image formats and try again." });
+                                return;
+                            }
                             let file = await handleMedia( files[i].path );
                             let url = `${BASE_URL}/media/${file}`;
                             adImages.push({ name: file, url, });
