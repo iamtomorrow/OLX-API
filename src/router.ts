@@ -36,8 +36,16 @@ router.get("/advertiser", UserController.getUser);
 
 router.get("/categories", AdController.getCategories);
 
-router.get("/ads/:id", AdController.getAd);
-router.get("/ads", urlencoded({ extended: true }), AdController.getAllAds);
+router.get("/ads/:id", 
+    express.urlencoded({ extended: true }), 
+    AdController.getAd
+);
+
+router.get("/ads", 
+    urlencoded({ extended: true }), 
+    AdController.getAllAds
+);
+
 router.post("/ads/create", 
     express.urlencoded({ extended: true }), 
     express.json(),

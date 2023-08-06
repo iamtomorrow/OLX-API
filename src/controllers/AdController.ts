@@ -27,13 +27,15 @@ const handleMedia = async ( path: string ) => {
 
 export const AdController = {
     getAllAds: async ( req: Request, res: Response ) => {
+        // console.log(req);
+
         let { sort='asc', limit=20, offset=0, category, state, keywords } = req.query;
         let filters: any = {}
 
         if (category) {
             let categoryMatch = await Category.findOne({ slug: category });
             if (categoryMatch) {
-                filters.category = categoryMatch?._id as string;
+                filters.category = categoryMatch?._id;
             }
         }
 
@@ -85,28 +87,22 @@ export const AdController = {
     },
 
     getAd: async ( req: Request, res: Response ) => {
-        const { id } = req.query;
+        const { id } = req.params;
 
         if ( id?.length === 24 ) {
             let ad = await Ad.findById( id );
             let adList = [ ];
             if (ad) {
-                console.log(ad);
 
                 if (ad?.views !== undefined) {
                     ad.views++;
                     await ad.save();
                 }
 
-                const ourId = ad.category;
-
-                console.log( await Category.findById( ourId ));
-
+                let matchCategory = await Category.findOne({ _id: ad.category });
                 let matchState = await State.findOne({ _id: ad.state });
-                let matchCategory = await Category.findById( ad.category );
 
                 if ( matchState && matchCategory ) {
-                    console.log("...");
                     const adState = matchState.name;
                     const adCategory = matchCategory.name;
                     const images = ad.images;
