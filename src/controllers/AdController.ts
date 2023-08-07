@@ -42,7 +42,7 @@ export const AdController = {
         if (state) {
             let stateMatch = await State.findOne({ name: state });
             if (stateMatch) {
-                filters.state = stateMatch._id;
+                filters.state = stateMatch?._id;
             }
         }
 
@@ -57,9 +57,6 @@ export const AdController = {
             .skip(parseInt(offset as string))
             .limit(parseInt(limit as string))
             .exec();
-
-        // console.log(ads);
-
         if (ads) {
             for ( let i in ads ) {
                 if (ads[i].status) {

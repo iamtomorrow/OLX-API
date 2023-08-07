@@ -63,12 +63,17 @@ export const UserController = {
                 const passwordHash = matchUser.hash_password;
                 const matchPasswordHash = await compare(password, passwordHash as string);
                 if (matchPasswordHash) {
-                    
-                    const token = await hash(Date.now() + Math.floor(Math.random() * 10).toString(), 10);
-                    matchUser.token = token;
-                    matchUser.save();
-                    res.json({ status: "Success", email: matchUser.email, token });
-                    return;
+
+                    const matchState = await State.findById( matchUser.state );
+                    if (matchState) {
+                        
+                        let state = matchState.name;
+                        const token = await hash(Date.now() + Math.floor(Math.random() * 10).toString(), 10);
+                        matchUser.token = token;
+                        matchUser.save();
+                        res.json({ status: "Success", username: matchUser.name, state, email: matchUser.email, token });
+                        return;
+                    }
                 } else {
                     res.json({ error: "Sorry, email or password provided are wrong! Please, provide a different email and/or password and try again." });
                     return;
