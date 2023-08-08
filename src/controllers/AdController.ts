@@ -19,7 +19,7 @@ interface FilterProps {
 const handleMedia = async ( path: string ) => {
     const fileName = `${Date.now()}.jpg`;
     await sharp(path)
-        .resize(300, 300)
+        .resize(600, 600)
         .toFormat("jpg")
         .toFile(`./public/media/${fileName}`);
     return fileName;
@@ -27,9 +27,9 @@ const handleMedia = async ( path: string ) => {
 
 export const AdController = {
     getAllAds: async ( req: Request, res: Response ) => {
-        // console.log(req);
+        let { sort='asc', limit=10, offset=0, category, state, keyword } = req.query;
 
-        let { sort='asc', limit=20, offset=0, category, state, keywords } = req.query;
+        console.log(category);
         let filters: any = {}
 
         if (category) {
@@ -46,8 +46,8 @@ export const AdController = {
             }
         }
 
-        if (keywords) {
-            filters.name = {"$regex": keywords, "$options": "i"};
+        if (keyword) {
+            filters.name = {"$regex": keyword, "$options": "i"};
         }
 
         let adsList = [];
@@ -143,6 +143,24 @@ export const AdController = {
             res.json({ error: "Please, make sure to provide a valid id before continuing." });
             return;
         }
+    },
+
+    getUserAds: async ( req: Request, res: Response ) => {
+        const { token } = req.query;
+
+        let user = await User.find({ token });
+        if (user) {
+            let userId = user[0]._id;
+            let ads = await Ad.findOne({ id_user: userId });
+            if (ads ) {
+                res.json({ ads });
+                return;
+            } else {
+                res.json({ error: "Sorry, no ads were found. That's because you have no ads yet or maybe some internal error occur." });
+                return;
+            }
+        }
+        res.json({}) ;
     },
 
     createAd: async ( req: Request, res: Response ) => {

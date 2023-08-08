@@ -40,11 +40,15 @@ router.get("/ads/:id",
     express.urlencoded({ extended: true }), 
     AdController.getAd
 );
-
 router.get("/ads", 
     urlencoded({ extended: true }), 
     AdController.getAllAds
 );
+router.get("/myads", 
+    Auth.private, 
+    express.json(), 
+    express.urlencoded({ extended: true }), 
+    AdController.getUserAds);
 
 router.post("/ads/create", 
     express.urlencoded({ extended: true }), 
