@@ -110,14 +110,16 @@ export const UserController = {
                         price_negotiable: ads[i].price_negotiable,
                         description: ads[i].description,
                         views:  ads[i].views,
-                        status: ads[i].status
+                        status: ads[i].status,
+                        images: ads[i].images
                     })
                 }
 
                 userList.push({
-                    user: user.name,
+                    name: user.name,
                     email: user.email,
                     state: state.name,
+                    token: user.token,
                     ads: adsList
                 })
 

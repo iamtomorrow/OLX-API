@@ -19,7 +19,7 @@ interface FilterProps {
 const handleMedia = async ( path: string ) => {
     const fileName = `${Date.now()}.jpg`;
     await sharp(path)
-        .resize(600, 600)
+        .resize(800, 800)
         .toFormat("jpg")
         .toFile(`./public/media/${fileName}`);
     return fileName;
@@ -27,9 +27,7 @@ const handleMedia = async ( path: string ) => {
 
 export const AdController = {
     getAllAds: async ( req: Request, res: Response ) => {
-        let { sort='asc', limit=10, offset=0, category, state, keyword } = req.query;
-
-        console.log(category);
+        let { sort='asc', limit=10, offset, category, state, keyword } = req.query;
         let filters: any = {}
 
         if (category) {
@@ -52,12 +50,13 @@ export const AdController = {
 
         let adsList = [];
 
+        let all = await Ad.find(filters).exec();
         let ads = await Ad.find(filters)
             .sort({ dateCreated: (sort === "asc" ? 1 : -1)})
             .skip(parseInt(offset as string))
             .limit(parseInt(limit as string))
             .exec();
-        if (ads) {
+        if (ads && all) {
             for ( let i in ads ) {
                 if (ads[i].status) {
                     let category = await Category.findById(ads[i].category);
@@ -80,7 +79,7 @@ export const AdController = {
             res.json({ error: "Ads not found. Please, provide a different combinations of filters and keywords and try again." });
             return;
         }
-        res.json({ ads: adsList });
+        res.json({ ads: adsList, length: all.length });
     },
 
     getAd: async ( req: Request, res: Response ) => {
