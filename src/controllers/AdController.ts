@@ -69,6 +69,7 @@ export const AdController = {
                         category: category?.name,
                         price: ads[i].price,
                         price_negotiable: ads[i].price_negotiable,
+                        date_created: ads[i].date_created,
                         description: ads[i].description,
                         views:  ads[i].views,
                         images: ads[i].images

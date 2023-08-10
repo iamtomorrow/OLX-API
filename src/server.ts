@@ -1,12 +1,13 @@
 
 import multer from 'multer';
 import { SERVER_PORT, MONGODB_DATABASE_URL } from './envs';
-import cors from 'cors';
+import cors, { CorsOptions, CorsOptionsDelegate } from 'cors';
 import mongoose from 'mongoose';
 import { router } from './router';
 import dotenv from 'dotenv';
-import express from 'express';
+import express, { NextFunction, Response, Request } from 'express';
 import path from 'path';
+import { request } from 'http';
 
 const server = express( );
 dotenv.config( );
@@ -19,8 +20,12 @@ mongoose.connection.on("error", ( ) => {
 const storage = multer.memoryStorage();
 multer({ storage });
 
+server.use( (req: Request, res: Response, next: NextFunction) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+    next();
+})
+
 server.use(router);
-server.use(cors());
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 server.use(express.static(path.join(__dirname, "../public")));
