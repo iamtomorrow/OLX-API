@@ -10,6 +10,8 @@ import path from 'path';
 import { request } from 'http';
 
 const server = express( );
+server.use(cors());
+
 dotenv.config( );
 
 mongoose.connect(MONGODB_DATABASE_URL as string);
@@ -19,11 +21,6 @@ mongoose.connection.on("error", ( ) => {
 
 const storage = multer.memoryStorage();
 multer({ storage });
-
-server.use( (req: Request, res: Response, next: NextFunction) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
-    next();
-})
 
 server.use(router);
 server.use(express.json());

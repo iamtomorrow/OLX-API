@@ -130,6 +130,15 @@ export const UserController = {
         res.json({ status: true });
     },
 
+    deleteMe: async ( req: Request, res: Response ) => {
+        const { id } = req.query;
+
+        let user = await User.findOneAndDelete({ _id: id });
+        console.log(user);
+
+        res.json({});
+    },
+
     getUser: async ( req: Request, res: Response ) => {
         const { id } = req.query;
 

@@ -27,8 +27,9 @@ const handleMedia = async ( path: string ) => {
 
 export const AdController = {
     getAllAds: async ( req: Request, res: Response ) => {
-        let { sort='asc', limit=10, offset, category, state, keyword } = req.query;
+        let { sort='asc', limit=4, offset=0, category, state, keyword } = req.query;
         let filters: any = {}
+        let adsList = [];
 
         if (category) {
             let categoryMatch = await Category.findOne({ slug: category });
@@ -47,8 +48,6 @@ export const AdController = {
         if (keyword) {
             filters.name = {"$regex": keyword, "$options": "i"};
         }
-
-        let adsList = [];
 
         let all = await Ad.find(filters).exec();
         let ads = await Ad.find(filters)
