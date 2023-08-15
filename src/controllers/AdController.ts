@@ -51,7 +51,7 @@ export const AdController = {
 
         let all = await Ad.find(filters).exec();
         let ads = await Ad.find(filters)
-            .sort({ dateCreated: (sort === "asc" ? 1 : -1)})
+            .sort({ "date_created": -1 })
             .skip(parseInt(offset as string))
             .limit(parseInt(limit as string))
             .exec();
@@ -150,7 +150,7 @@ export const AdController = {
         let user = await User.find({ token });
         if (user) {
             let userId = user[0]._id;
-            let ads = await Ad.findOne({ id_user: userId });
+            let ads = await Ad.find({ id_user: userId });
             if (ads ) {
                 res.json({ ads });
                 return;
@@ -225,6 +225,6 @@ export const AdController = {
     getCategories: async ( req: Request, res: Response ) => {
         const categories = await Category.find();
 
-        res.json({ categories });
+        res.json({ categories, lenght: categories.length });
     }
 }

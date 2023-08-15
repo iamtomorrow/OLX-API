@@ -1,5 +1,4 @@
 
-import cors from 'cors';
 import express from 'express';
 import multer from "multer";
 import { Request, Response, urlencoded } from "express";
@@ -25,13 +24,15 @@ router.post("/users/signup",
     express.urlencoded({ extended: true }),
     UserValidator.signUp, 
     UserController.signUp);
-    
+
 router.post("/users/signin", 
     express.json(),
     express.urlencoded({ extended: true }), 
     UserValidator.signIn, 
     UserController.signIn);
 router.get("/users/me", Auth.private, UserController.getMe);
+router.get("/users/delete", Auth.private, UserController.deleteMe);
+router.put("/users/editme", Auth.private, UserController.editMe);
 router.get("/advertiser", UserController.getUser);
 
 router.get("/categories", AdController.getCategories);

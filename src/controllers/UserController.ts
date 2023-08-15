@@ -100,7 +100,7 @@ export const UserController = {
             const ads = await Ad.find({ id_user: user._id });
     
             if (state && ads) {
-                for ( let i in ads ) {
+                /* for ( let i in ads ) {
                     let cat = await Category.findById(ads[i].category);
                     adsList.push({
                         name: ads[i].name,
@@ -113,14 +113,13 @@ export const UserController = {
                         status: ads[i].status,
                         images: ads[i].images
                     })
-                }
+                } */
 
                 userList.push({
                     name: user.name,
                     email: user.email,
                     state: state.name,
                     token: user.token,
-                    ads: adsList
                 })
 
                 res.json({ user: userList });
@@ -131,12 +130,27 @@ export const UserController = {
     },
 
     deleteMe: async ( req: Request, res: Response ) => {
-        const { id } = req.query;
+        const { token } = req.query;
 
-        let user = await User.findOneAndDelete({ _id: id });
-        console.log(user);
+        let user = await User.findOneAndDelete({ token });
+        if (user) {
+            res.json({ status: "User was seccessfuly deleted." });
+            return;
+        }
+        res.json({ error: "Error trying to delete user." });
+    },
 
-        res.json({});
+    editMe: async ( req: Request, res: Response ) => {
+        const { token, name, email } = req.query;
+
+        const updates = { name, email };
+        const filter = { token };
+        let user = await User.findOneAndUpdate( filter, updates );
+        if (user) {
+            res.json({ updates });
+            return; 
+        }
+        res.json({ error: "Error trying to update your information." })
     },
 
     getUser: async ( req: Request, res: Response ) => {
