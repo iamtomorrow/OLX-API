@@ -15,3 +15,5 @@ To call the OLX API you need to specify a specific endpoint predefined to retrie
 Before calling the API
 ======================
 We recommend you to use http://localhost:port/ping before continuing. This is a testing endpoint to test API server status. It returns a json with the following structure: { pong: “pong” } if everything is fine. 
+
+![states](https://github.com/iamtomorrow/OLX-API/assets/72582696/3b8ecfbd-5add-4f32-8277-1229a5e328e9)
