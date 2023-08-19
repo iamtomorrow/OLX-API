@@ -10,10 +10,15 @@ This reference guide explains how to use the API to perform all of these operati
 
 Calling the API
 ===============
-To call the OLX API you need to specify a specific endpoint predefined to retrieve data returned from the API. In the following lines you can find these endpoints and their returns.
+To call the OLX API you need to specify a specific endpoint predefined to retrieve data returned from the API. In the following lines, you can find these endpoints and their returns.
 
 Before calling the API
 ======================
-We recommend you to use http://localhost:port/ping before continuing. This is a testing endpoint to test API server status. It returns a json with the following structure: { pong: “pong” } if everything is fine. 
+We recommend you use http://localhost:port/ping before continuing. This is a testing endpoint to test the API server status. It returns a JSON with the following structure: { pong: “pong” } if everything is fine. 
 
+Database & Rest API diagram
+========================
+![database](https://github.com/iamtomorrow/OLX-API/assets/72582696/a3f25399-a9cf-402d-9ed6-6775446ce239)
+
+References / Endpoints / Methods
 ![states](https://github.com/iamtomorrow/OLX-API/assets/72582696/3b8ecfbd-5add-4f32-8277-1229a5e328e9)
