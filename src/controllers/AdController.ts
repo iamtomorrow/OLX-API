@@ -26,7 +26,8 @@ const handleMedia = async ( path: string ) => {
 }
 
 export const AdController = {
-    getAllAds: async ( req: Request, res: Response ) => {
+
+    getAds: async ( req: Request, res: Response ) => {
         let { sort='asc', limit=4, offset=0, category, state, keyword } = req.query;
         let filters: any = {}
         let adsList = [];
@@ -155,14 +156,14 @@ export const AdController = {
                 res.json({ ads });
                 return;
             } else {
-                res.json({ error: "Sorry, no ads were found. That's because you have no ads yet or maybe some internal error occur." });
+                res.json({ error: "Sorry, no ads were found. That's because you have no ads yet." });
                 return;
             }
         }
         res.json({}) ;
     },
 
-    createAd: async ( req: Request, res: Response ) => {
+    postAd: async ( req: Request, res: Response ) => {
         const token = req.query?.token;
         /*  console.log( JSON.parse(JSON.stringify(req.body)) );*/
         let name = req.body?.name;
@@ -222,6 +223,7 @@ export const AdController = {
         }
     },
 
+    /*  */
     getCategories: async ( req: Request, res: Response ) => {
         const categories = await Category.find();
 

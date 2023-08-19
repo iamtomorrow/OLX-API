@@ -32,7 +32,7 @@ export const UserController = {
                         hash_password: passwordHash,
                         token
                     })
-                    res.json({ state: "Success", email, token });
+                    res.json({ status: "Success", email, token });
                     return;
                 } else {
                     res.json({ error: { email: "The provided email already exists. Please, provide a different email and try again." } });
@@ -50,9 +50,7 @@ export const UserController = {
 
     signIn: async ( req: Request, res: Response ) => {
         const error = validationResult(req);
-        const result = matchedData(req);
-        
-        console.log( matchedData(req) );
+        const result = matchedData(req); 
         
         if ( error.isEmpty() ) {
 
@@ -71,7 +69,7 @@ export const UserController = {
                         const token = await hash(Date.now() + Math.floor(Math.random() * 10).toString(), 10);
                         matchUser.token = token;
                         matchUser.save();
-                        res.json({ status: "Success", username: matchUser.name, state, email: matchUser.email, token });
+                        res.json({ status: "Success", name: matchUser.name, state, email: matchUser.email, token });
                         return;
                     }
                 } else {
@@ -97,9 +95,9 @@ export const UserController = {
             let adsList: any = [];
     
             const state = await State.findOne({ _id: user.state });
-            const ads = await Ad.find({ id_user: user._id });
+            // const ads = await Ad.find({ id_user: user._id });
     
-            if (state && ads) {
+            if (state) {
                 /* for ( let i in ads ) {
                     let cat = await Category.findById(ads[i].category);
                     adsList.push({
@@ -125,6 +123,9 @@ export const UserController = {
                 res.json({ user: userList });
                 return;
             }
+        } else {
+            res.json({ error: "User was not found! Please, provide a valid token and try again." });
+            return;
         }
         res.json({ status: true });
     },
@@ -134,7 +135,7 @@ export const UserController = {
 
         let user = await User.findOneAndDelete({ token });
         if (user) {
-            res.json({ status: "User was seccessfuly deleted." });
+            res.json({ status: "User was seccessfully deleted." });
             return;
         }
         res.json({ error: "Error trying to delete user." });

@@ -16,7 +16,7 @@ const upload = multer({ dest: "tmp" });
 router.get("/ping", ( req: Request, res: Response ) => {
     res.json({ pong: "pong" })
 });
-
+/*  */
 router.get("/states", StateController.getStates);
 
 router.post("/users/signup", 
@@ -31,29 +31,31 @@ router.post("/users/signin",
     UserValidator.signIn, 
     UserController.signIn);
 router.get("/users/me", Auth.private, UserController.getMe);
-router.get("/users/delete", Auth.private, UserController.deleteMe);
+router.delete("/users/delete", Auth.private, UserController.deleteMe);
 router.put("/users/editme", Auth.private, UserController.editMe);
-router.get("/advertiser", UserController.getUser);
+router.get("/user", UserController.getUser);
 
+/*  */
 router.get("/categories", AdController.getCategories);
+
+router.get("/ads", urlencoded({ extended: true }), AdController.getAds );
+
+router.get("/ads/myads", 
+    Auth.private, 
+    express.json(), 
+    express.urlencoded({ extended: true }), 
+    AdController.getUserAds);
 
 router.get("/ads/:id", 
     express.urlencoded({ extended: true }), 
     AdController.getAd
 );
-router.get("/ads", urlencoded({ extended: true }), AdController.getAllAds );
-router.get("/myads", 
-    Auth.private, 
-    express.json(), 
-    express.urlencoded({ extended: true }), 
-    AdController.getUserAds);
+
 
 router.post("/ads/create", 
     express.urlencoded({ extended: true }), 
     express.json(),
     Auth.private, 
     upload.array("images"),
-    AdController.createAd
+    AdController.postAd
 );
-
-router.post("/send-email", EmailController.sendEmail);
