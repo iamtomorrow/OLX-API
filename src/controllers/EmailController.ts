@@ -5,8 +5,6 @@ import { Request, Response } from 'express';
 
 dotenv.config();
 
-// bcnmxksdsxkgthwy
-
 export const EmailController = {
     sendEmail: async ( req: Request, res: Response ) => {  
         let transport = nodemailer.createTransport({

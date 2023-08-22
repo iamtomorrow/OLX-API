@@ -35,7 +35,6 @@ router.delete("/users/delete", Auth.private, UserController.deleteMe);
 router.put("/users/editme", Auth.private, UserController.editMe);
 router.get("/user", UserController.getUser);
 
-/*  */
 router.get("/categories", AdController.getCategories);
 
 router.get("/ads", urlencoded({ extended: true }), AdController.getAds );
@@ -50,7 +49,6 @@ router.get("/ads/:id",
     express.urlencoded({ extended: true }), 
     AdController.getAd
 );
-
 
 router.post("/ads/create", 
     express.urlencoded({ extended: true }), 

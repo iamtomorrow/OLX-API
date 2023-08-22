@@ -223,7 +223,6 @@ export const AdController = {
         }
     },
 
-    /*  */
     getCategories: async ( req: Request, res: Response ) => {
         const categories = await Category.find();
 
