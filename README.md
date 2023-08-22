@@ -1,4 +1,5 @@
-![tomorrow-developers](https://github.com/iamtomorrow/OLX-API/assets/72582696/5057a258-0afd-4618-ae8d-1640e20203c3)
+
+![tomorrow-developers](https://github.com/iamtomorrow/OLX-API/assets/72582696/361e3fb8-14ce-46a2-948f-63f153a76947)
 
 OLX API
 
@@ -14,11 +15,14 @@ To call the OLX API you need to specify a specific endpoint predefined to retrie
 
 Before calling the API
 ======================
-We recommend you use http://localhost:port/ping before continuing. This is a testing endpoint to test the API server status. It returns a JSON with the following structure: { pong: “pong” } if everything is fine. 
+We recommend you use http://olx-api.onrender.com/ping before continuing. This is a testing endpoint to test the API server status. It returns a JSON with the following structure: { pong: “pong” } if everything is fine. 
 
 Database & Rest API diagram
 ========================
 ![database](https://github.com/iamtomorrow/OLX-API/assets/72582696/b1324a6c-3606-4efb-8901-8932463789fa)
 
 References / Endpoints / Methods
+================================
 ![desk-developers-weboage](https://github.com/iamtomorrow/OLX-API/assets/72582696/cdd0eb1d-630d-4fe1-9187-b288d38194bf)
+
+Please, feel free to test our API on https://olx-api.onrender.com/ and access our development center for additional information and full documentation.
