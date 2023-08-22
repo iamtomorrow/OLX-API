@@ -1,4 +1,4 @@
+.env
 /public
 /node_modules
 /build
-*.env
