@@ -18,7 +18,7 @@ We recommend you use http://localhost:port/ping before continuing. This is a tes
 
 Database & Rest API diagram
 ========================
-![database](https://github.com/iamtomorrow/OLX-API/assets/72582696/a3f25399-a9cf-402d-9ed6-6775446ce239)
+![database](https://github.com/iamtomorrow/OLX-API/assets/72582696/b1324a6c-3606-4efb-8901-8932463789fa)
 
 References / Endpoints / Methods
-![states](https://github.com/iamtomorrow/OLX-API/assets/72582696/3b8ecfbd-5add-4f32-8277-1229a5e328e9)
+![desk-developers-weboage](https://github.com/iamtomorrow/OLX-API/assets/72582696/cdd0eb1d-630d-4fe1-9187-b288d38194bf)
